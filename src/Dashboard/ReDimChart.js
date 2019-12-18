@@ -14,6 +14,7 @@ import gql from "graphql-tag";
 import { useLocation } from "react-router";
 import { useDashboardType, useDashboardID } from "../utils/useDashboardInfo";
 import Legend from "./Legend";
+import CellTypes from "./CellTypes";
 
 const QUERY_CELLTYPES = gql`
   query(
@@ -33,9 +34,14 @@ const QUERY_CELLTYPES = gql`
     }
     celltypes(type: $dashboardType, dashboardID: $dashboardID) {
       name
+      count
     }
   }
 `;
+// celltypeProportion(type: $dashboardType, dashboardID: $dashboardID) {
+//   key
+//   doc_count
+// }
 
 const QUERY_OTHER = gql`
   query(
@@ -131,6 +137,7 @@ const ReDimChart = ({
     : dashboardAttributeValues;
 
   const colorScale = getColorScale(labels[index], colorData);
+
   return (
     <BaseChart onSelect={onSelect} label={labels[index]}>
       <Grid item>
@@ -147,6 +154,15 @@ const ReDimChart = ({
       <Grid item>
         <Legend
           data={colorData}
+          colorScale={colorScale}
+          width={width}
+          label={labels[index]}
+          onHover={onLegendHover}
+        />
+      </Grid>
+      <Grid item>
+        <CellTypes
+          data={celltypes}
           colorScale={colorScale}
           width={width}
           label={labels[index]}

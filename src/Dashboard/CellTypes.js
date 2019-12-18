@@ -2,14 +2,15 @@ import React from "react";
 
 import OrdinalFrame from "semiotic/lib/OrdinalFrame";
 
-const Legend = ({ label, data, colorScale, width, onHover }) => {
+const CellTypes = ({ label, data, colorScale, width, onHover }) => {
   const dataNames =
     label["label"] === "celltype" ? data : data.map(datum => datum["label"]);
 
-  // console.log(dataNames.map(name => ({ type: "legend", name, value: 5 })))
+//   console.log(dataNames)
+//   console.log(dataNames.map(name => ({ type: "legend", name: name["name"], value: 5 })))
 
   const frameProps = {
-    data: dataNames.map(name => ({ type: "legend", name, value: 5 })),
+    data: dataNames.map(name => ({ type: "legend", name: name["name"], value: name["count"] })),
     size: [width * 0.9, 15],
     type: "bar",
     projection: "horizontal",
@@ -33,4 +34,4 @@ const Legend = ({ label, data, colorScale, width, onHover }) => {
   return <OrdinalFrame {...frameProps} />;
 };
 
-export default Legend;
+export default CellTypes;
