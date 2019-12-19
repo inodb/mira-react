@@ -39,7 +39,7 @@ const Dashboard = () => {
             key={`grid_redim_${index}`}
             item
             xs={4}
-            style={{ minHeight: 500 }}
+            style={{ minHeight: 1000 }}
           >
             <ReDimChart
               key={`redim_${index}`}

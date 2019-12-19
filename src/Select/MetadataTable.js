@@ -17,6 +17,8 @@ import { useDashboardType, useDashboardID } from "../utils/useDashboardInfo";
 import { makeStyles } from "@material-ui/core/styles";
 import formatInteger from "../utils/formatInteger";
 
+import CellTypes from "../Dashboard/CellTypes";
+
 const useStyles = makeStyles(theme => ({
   tableRowRoot: {
     "&:hover": {
@@ -71,6 +73,11 @@ const QUERY = gql`
           name
           values
         }
+        celltypeProportion
+        {
+          key
+          doc_count
+        }
       }
       metadata {
         name
@@ -94,6 +101,9 @@ const MetadataTable = ({ filters, onSelect }) => {
   }
 
   const { dashboards, metadata, stats } = data["dashboardClusters"];
+  // console.log(dashboards)
+  // console.log(metadata)
+  // console.log(stats)
 
   const metadataHeaders = metadata.map(datum => datum["name"]);
 
@@ -108,7 +118,7 @@ const MetadataTable = ({ filters, onSelect }) => {
                   key={`sampleRow_${row["id"]}`}
                   metadata={metadataHeaders}
                   stats={stats}
-                  data={collapseMetadataAndStats(row["samples"][0])}
+                  data={collapseMetadataAndStats(row["samples"][0], row["celltypeProportion"])}
                   onClick={onSelect}
                   selectedID={dashboardID}
                 />
@@ -174,7 +184,7 @@ const DashboardTable = ({
         ? dashboard["samples"].map(sample => (
             <SampleRow
               id={`dashboardTable_${sample["id"]}`}
-              data={collapseMetadataAndStats(sample)}
+              data={collapseMetadataAndStats(sample, "stuff")}
               metadata={metadata}
               stats={stats}
             />
@@ -246,6 +256,8 @@ const MergedRow = ({
 };
 const SampleRow = ({ metadata, stats, data, onClick, selectedID }) => {
   const classes = useStyles();
+  // console.log(data)
+
   return (
     <TableRow
       className={onClick ? classes.tableRow : null}
@@ -266,13 +278,21 @@ const SampleRow = ({ metadata, stats, data, onClick, selectedID }) => {
           <TableCell align="center" key={`${data["id"]}_stats_${column}`}>
             {formatInteger(data["stats"][column])}
           </TableCell>
-        ))
+        )),
+        <TableCell align="center" key="asdf">
+          <CellTypes
+            data={data["celltypeCounts"]}
+            width={100}
+            // label={labels[index]}
+            // onHover={onLegendHover}
+          />
+        </TableCell>
       ]}
     </TableRow>
   );
 };
 
-const collapseMetadataAndStats = sample => ({
+const collapseMetadataAndStats = (sample, stuff) => ({
   ...sample,
   metadata: sample["metadata"].reduce(
     (mapping, datum) => ({
@@ -287,7 +307,8 @@ const collapseMetadataAndStats = sample => ({
       [datum["name"]]: datum["value"]
     }),
     {}
-  )
+  ),
+  celltypeCounts: stuff
 });
 
 export default MetadataTable;

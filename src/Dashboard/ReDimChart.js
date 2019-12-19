@@ -160,15 +160,6 @@ const ReDimChart = ({
           onHover={onLegendHover}
         />
       </Grid>
-      <Grid item>
-        <CellTypes
-          data={celltypes}
-          colorScale={colorScale}
-          width={width}
-          label={labels[index]}
-          onHover={onLegendHover}
-        />
-      </Grid>
     </BaseChart>
   );
 };
